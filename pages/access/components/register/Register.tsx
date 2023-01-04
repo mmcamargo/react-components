@@ -1,6 +1,4 @@
-import { useFormik } from 'formik';
-import registerSchema from '../../schemas/registerSchema';
-import { useState, useEffect } from 'react';
+import { useRegisterForm } from '../../hooks';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import ConditionallyRender from '../conditionally-render/ConditionallyRender';
 
@@ -16,73 +14,10 @@ function Register(
 		handleChange,
 		handleBlur,
 		handleSubmit,
-	} = useFormik({
-		initialValues: {
-			firstName: '',
-			lastName: '',
-			email: '',
-			password: '',
-			confirmPassword: '',
-		},
-		validationSchema: registerSchema,
-		onSubmit(values, formikHelpers) {
-			console.log('Não implementado.');
-
-			// const someEqualEmail = array.some(
-			// 	(user) => user.email === values.email
-			// );
-
-			// if (someEqualEmail) {
-			// 	setDisabledBtn(true);
-			// 	setShowAlert(true);
-
-			// 	setTimeout(() => {
-			// 		setDisabledBtn(false);
-			// 		setShowAlert(false);
-			// 	}, 3000);
-
-			// 	return;
-			// }
-
-			// resetForm();
-			// setState(false);
-		},
-	});
-
-	const [showAlert, setShowAlert] = useState<boolean>(false);
-	const [disabledBtn, setDisabledBtn] = useState<boolean>(true);
-
-	useEffect(() => {
-		if (
-			values.firstName !== '' &&
-			values.lastName !== '' &&
-			values.email !== '' &&
-			values.password !== '' &&
-			values.confirmPassword !== ''
-		) {
-			if (
-				!errors.firstName &&
-				!errors.lastName &&
-				!errors.email &&
-				!errors.password &&
-				!errors.confirmPassword
-			) {
-				setDisabledBtn(false);
-			} else {
-				setDisabledBtn(true);
-			}
-		} else {
-			setDisabledBtn(true);
-		}
-	}, [{ ...values }]);
-
-	useEffect(() => {
-		if (showAlert) {
-			setDisabledBtn(true);
-		} else {
-			setDisabledBtn(false);
-		}
-	}, [showAlert]);
+		showAlert,
+		setShowAlert,
+		disabledBtn,
+	} = useRegisterForm(setState);
 
 	return (
 		<Box
@@ -184,7 +119,11 @@ function Register(
 				sx={{ maxHeight: 36.5 }}
 				variant='outlined'
 				fullWidth
-				onClick={() => setState(false)}
+				onClick={() => {
+					setShowAlert(false);
+					resetForm();
+					setState(false);
+				}}
 			>
 				Conecte-se
 			</Button>
